@@ -17,7 +17,7 @@ class PyAlgoUtils:
                 "Low": data["low"],
                 "Close": data["close"],
                 "Volume": data["volume"],
-                "Adj Close": data["close"]
+                "Adj. Close": data["close"]
             }
         except Exception:
             return None
