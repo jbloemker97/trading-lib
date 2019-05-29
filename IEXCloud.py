@@ -7,7 +7,7 @@ import requests
 
 class IEXCloud: 
     __base_url = None
-    __default_fields = ['open', 'high', 'low', 'close', 'volume']
+    __default_fields = ['open', 'high', 'low', 'close', 'volume', 'date']
     
     def __init__(self, pk_key=None, sk_key=None, test=True):
         self.__pk_key = pk_key
