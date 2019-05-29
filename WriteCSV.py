@@ -29,7 +29,7 @@ class WriteCSV:
         is_file = os.path.isfile(self.file_path())
 
         with open(self.file_path(), "a") as file:
-            writer = csv.DictWriter(file, fieldnames=data.keys())
+            writer = csv.DictWriter(file, fieldnames=data.keys(), lineterminator = '\n')
             
             # Write header if file (or headers) don't exist
             if not is_file:
