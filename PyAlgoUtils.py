@@ -11,7 +11,7 @@ class PyAlgoUtils:
         # Catches exception if key doesn't exist in data dictionary
         try:
             ordered_dict = {
-                "Date Time": data["date"] + " 13:59:00",
+                "Date Time": data["date"] + " 00:00:00",
                 "Open": data["open"],
                 "High": data["high"],
                 "Low": data["low"],
