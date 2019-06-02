@@ -8,13 +8,27 @@ class MyStrategy(strategy.BacktestingStrategy):
         self.__instrument = instrument
 
     def onBars(self, bars):
-        bar = bars[self.__instrument]
-        self.info(bar.getClose())
+            bar = bars[self.__instrument]
+            self.info(f"{self.__instrument}: {bar.getClose()}")   
 
-# Load the bar feed from the CSV file
-feed = GenericBarFeed(Frequency.DAY)
-feed.addBarsFromCSV("aapl", "data/AAPL.csv")
 
-# Evaluate the strategy with the feed's bars.
-myStrategy = MyStrategy(feed, "aapl")
-myStrategy.run()
+
+    
+
+
+def run_strat(instrument):
+    # Load the bar feed from the CSV file
+    feed = GenericBarFeed(Frequency.DAY)
+    feed.addBarsFromCSV(instrument, f"data/{instrument}.csv")
+
+    myStrategy = MyStrategy(feed, instrument)
+    myStrategy.run()
+
+def main():
+    # Evaluate the strategy with the feed's bars.
+    stocks = ['TSLA', 'SPY', 'AAPL']
+
+    for stock in stocks:
+        run_strat(stock)
+
+main()
