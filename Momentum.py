@@ -7,26 +7,28 @@ class MomentumStrategy(strategy.BacktestingStrategy):
     def __init__(self, feed, instruments):
         super(MomentumStrategy, self).__init__(feed)
         self.__instruments = instruments
-        self.__rsi = None
+        self.__feed = feed
+        self.__prices = {}
+        self.__rsi = {}
+
+        for instrument in feed.getRegisteredInstruments():
+            self.__prices[instrument] = feed[instrument].getPriceDataSeries()
+            self.__rsi[instrument] = rsi.RSI(self.__prices[instrument], 14)
+
         # self.__prices = feed[instrument].getPriceDataSeries()
         # self.__rsi = rsi.RSI(self.__prices, 14)
 
-    def getRSI(self):
-        if self.__rsi is not None: return self.__rsi
-
-    def setValues(self, prices, rsi):
-        self.__prices = prices
-        self.__rsi = rsi
-
     def onBars(self, bars):
 
+        # Loop through list of stocks
         for instrument in self.__instruments:
+
+            if self.__rsi[instrument][-1] is None:
+                return
+
+            
             bar = bars[instrument]
-            self.info(f"{instrument}: {bar.getClose()}")
-
-
-    def enterLongSignal(self, bar):
-        return self.__rsi[-1] < 50 # Threshold
+            self.info(f"{instrument}: {bar.getClose()} RSI: {self.__rsi[instrument][-1]}")
 
 
 def main (instruments):
