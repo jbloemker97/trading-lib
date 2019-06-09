@@ -1,22 +1,21 @@
 from pyalgotrade import strategy
 from pyalgotrade.barfeed.csvfeed import GenericBarFeed
 from pyalgotrade.bar import Frequency
-from pyalgotrade.technical import rsi
+from pyalgotrade.technical import rsi, ma
 
 class MomentumStrategy(strategy.BacktestingStrategy):
-    def __init__(self, feed, instruments):
+    def __init__(self, feed, instruments, smaPeriod):
         super(MomentumStrategy, self).__init__(feed)
         self.__instruments = instruments
         self.__feed = feed
         self.__prices = {}
         self.__rsi = {}
+        self.__ma = {}
 
         for instrument in feed.getRegisteredInstruments():
             self.__prices[instrument] = feed[instrument].getPriceDataSeries()
             self.__rsi[instrument] = rsi.RSI(self.__prices[instrument], 14)
-
-        # self.__prices = feed[instrument].getPriceDataSeries()
-        # self.__rsi = rsi.RSI(self.__prices, 14)
+            self.__ma[instrument] = ma.SMA(self.__prices[instrument], smaPeriod)
 
     def onBars(self, bars):
 
@@ -28,7 +27,7 @@ class MomentumStrategy(strategy.BacktestingStrategy):
 
             
             bar = bars[instrument]
-            self.info(f"{instrument}: {bar.getClose()} RSI: {self.__rsi[instrument][-1]}")
+            self.info(f"{instrument}: {bar.getClose()} RSI: {self.__rsi[instrument][-1]}, SMA: {self.__ma[instrument][-1]}")
 
 
 def main (instruments):
@@ -38,7 +37,7 @@ def main (instruments):
     for instrument in instruments:
         feed.addBarsFromCSV(instrument, f"data/{instrument}.csv")
 
-    momentumStrategy = MomentumStrategy(feed, instruments)
+    momentumStrategy = MomentumStrategy(feed, instruments, 200)
     momentumStrategy.run()
    
 
